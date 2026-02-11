@@ -5,7 +5,9 @@ import { useState } from 'react';
 import {nanoid} from 'nanoid';
 
 function App() {
-  const [dice, setDice] = useState(generateAllNewDice())
+  const [dice, setDice] = useState(generateAllNewDice());
+  const [die, setDie] = useState({});
+
   function generateAllNewDice() {
     // const newDice = [];
 
@@ -26,13 +28,14 @@ function App() {
   }
 
   function rollDice() {
-    setDice(generateAllNewDice());
+    setDice(prevDice => prevDice.map(die => die.isHeld ? die : {...die, value: Math.ceil(Math.random() * 6)}));
   }
 
+  const hold = (id) => {
+      setDice(prevDice => prevDice.map(die => die.id === id ? ({...die, isHeld: !die.isHeld}) : die));
+  }
 
-  console.log(generateAllNewDice());
-
-  const diceElements = dice.map(dieObj => <Die key={dieObj.id} value={dieObj.value} />);
+  const diceElements = dice.map(dieObj => <Die key={dieObj.id} value={dieObj.value} isHeld={dieObj.isHeld} hold={hold} id={dieObj.id} />);
 
   return (
     <main>
